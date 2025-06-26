@@ -7,12 +7,10 @@ import {
     LayoutAnimation,
     Platform,
     UIManager,
+    Text,
 } from 'react-native';
-import { ThemedText } from './ThemedText';
-import { useThemeColor } from '../hooks/useThemeColor';
-import { FavoriteButton } from './FavoriteButton';
-import { Ionicons } from '@expo/vector-icons';
 
+// Android Animation Enabler
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -21,7 +19,7 @@ export interface Meal {
     id: string;
     name: string;
     description?: string;
-    price?: string;
+    price?: number;
 }
 
 interface Props {
@@ -30,35 +28,23 @@ interface Props {
 
 export const MealAccordion: React.FC<Props> = ({ meal }) => {
     const [open, setOpen] = useState(false);
-    const bg = useThemeColor({}, 'card');
-    const text = useThemeColor({}, 'text');
-
     const toggle = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setOpen(!open);
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: bg }]}>
+        <View style={styles.card}>
             <Pressable onPress={toggle} style={styles.header}>
-                <View style={styles.titleRow}>
-                    <Ionicons
-                        name={open ? 'chevron-up' : 'chevron-down'}
-                        size={20}
-                        color={text}
-                    />
-                    <ThemedText style={styles.title}>{meal.name}</ThemedText>
-                </View>
-                <FavoriteButton meal={meal} />
+                <Text style={styles.title}>{meal.name}</Text>
+                <Text style={styles.indicator}>{open ? '−' : '+'}</Text>
             </Pressable>
             {open && (
                 <View style={styles.body}>
-                    {meal.description ? (
-                        <ThemedText style={styles.desc}>{meal.description}</ThemedText>
-                    ) : null}
-                    {meal.price ? (
-                        <ThemedText style={styles.price}>{meal.price} €</ThemedText>
-                    ) : null}
+                    {meal.description && <Text style={styles.text}>{meal.description}</Text>}
+                    {meal.price != null && (
+                        <Text style={[styles.text, styles.price]}>{meal.price.toFixed(2)} €</Text>
+                    )}
                 </View>
             )}
         </View>
@@ -66,34 +52,36 @@ export const MealAccordion: React.FC<Props> = ({ meal }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        borderRadius: 8,
+    card: {
         marginBottom: 12,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderRadius: 8,
+        backgroundColor: '#fff',
         overflow: 'hidden',
     },
     header: {
         flexDirection: 'row',
-        padding: 12,
         justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    titleRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        padding: 12,
+        backgroundColor: '#eee',
     },
     title: {
-        marginLeft: 8,
         fontSize: 16,
+        fontWeight: '600',
+    },
+    indicator: {
+        fontSize: 18,
         fontWeight: '600',
     },
     body: {
         padding: 12,
-        borderTopWidth: StyleSheet.hairlineWidth,
+        backgroundColor: '#fafafa',
     },
-    desc: {
+    text: {
+        fontSize: 14,
         marginBottom: 8,
     },
     price: {
-        fontWeight: '500',
+        fontWeight: '700',
     },
 });

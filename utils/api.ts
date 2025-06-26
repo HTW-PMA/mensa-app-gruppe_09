@@ -1,76 +1,100 @@
 // utils/api.ts
 import { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import axios from 'axios';
 import { Meal } from '../components/MealAccordion';
-
-const BASE_URL = 'https://api.foodloop.example.com';
-
-interface TodayResponse {
+import Constants from 'expo-constants';
+export interface TodayResponse {
     meals: Meal[];
 }
 
-interface DaySchedule {
+export interface DaySchedule {
     day: string;
     meals: Meal[];
 }
-
-interface WeeklyResponse {
+export interface WeeklyResponse {
     days: DaySchedule[];
 }
 
-interface UseFetchResult<T> {
-    data: T | null;
-    isLoading: boolean;
-    error: Error | null;
+
+
+const API_BASE = 'https://api.deine-mensa.de';
+const KEY = Constants.manifest?.extra?.mensaApiKey as string;
+
+export async function fetchTodayMenu(): Promise<TodayResponse> {
+    const res = await axios.get<TodayResponse>(`${API_BASE}/menu/today`, {
+        headers: { 'X-API-Key': KEY },
+    });
+    return res.data;
 }
 
-// Gemeinsamer Hook für alle Requests
-function useFetch<T>(endpoint: string): UseFetchResult<T> {
-    const [data, setData] = useState<T | null>(null);
-    const [isLoading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
+/**
+ * Demo-/Mock-Hook für das heutige Menü
+ */
+export function useFetchTodayMenu() {
+    const [data, setData] = useState<TodayResponse>({ meals: [] });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        let canceled = false;
-
-        axios
-            .get<T>(`${BASE_URL}${endpoint}`)
-            .then((res) => {
-                if (!canceled) setData(res.data);
-            })
-            .catch((err) => {
-                if (!canceled) setError(err);
-            })
-            .finally(() => {
-                if (!canceled) setLoading(false);
+        if (Platform.OS === 'web') {
+            // Sofort Demo-Daten auf Web
+            setData({
+                meals: [
+                    { id: '1', name: 'Web-Demo: Spaghetti', price: 4.2 },
+                    { id: '2', name: 'Web-Demo: Salat',      price: 3.0 },
+                ],
             });
+            setLoading(false);
+        } else {
+            // Mock-Timeout auf Mobile
+            setTimeout(() => {
+                setData({
+                    meals: [
+                        { id: '1', name: 'Spaghetti Bolognese', description: 'mit Rinderhack', price: 4.5 },
+                        { id: '2', name: 'Gemischter Salat',    price: 2.8 },
+                        { id: '3', name: 'Curry mit Reis',      price: 3.9 },
+                    ],
+                });
+                setLoading(false);
+            }, 1000);
+        }
+    }, []);
 
-        return () => {
-            canceled = true;
-        };
-    }, [endpoint]);
-
-    return { data, isLoading, error };
+    return { data, loading, error };
 }
 
 /**
- * Holt das Speiseplan-Menü für heute.
+ * Demo-/Mock-Hook für den Wochenplan
  */
-export function fetchTodayMenu() {
-    return useFetch<TodayResponse>('/menu/today');
-}
+export function useFetchWeeklySchedule() {
+    const [data, setData] = useState<WeeklyResponse>({ days: [] });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-/**
- * Holt den kompletten Wochenplan.
- */
-export function fetchWeeklySchedule() {
-    return useFetch<WeeklyResponse>('/menu/week');
-}
+    useEffect(() => {
+        if (Platform.OS === 'web') {
+            // Demo-Daten Web
+            setData({
+                days: [
+                    { day: 'Mo', meals: [{ id: 'm1', name: 'Web-Pasta', price: 3.5 }] },
+                    { day: 'Di', meals: [{ id: 'm2', name: 'Web-Salat', price: 2.8 }] },
+                ],
+            });
+            setLoading(false);
+        } else {
+            // Mock-Mobil
+            setTimeout(() => {
+                setData({
+                    days: [
+                        { day: 'Mo', meals: [{ id: 'm1', name: 'Spaghetti Bolognese', price: 4.5 }] },
+                        { day: 'Di', meals: [{ id: 'm2', name: 'Vegetarisches Curry',  price: 3.9 }] },
+                    ],
+                });
+                setLoading(false);
+            }, 1000);
+        }
+    }, []);
 
-/**
- * Holt detaillierte Gerichte nach Mahlzeit-Typ.
- * @param mealType 'breakfast' | 'lunch' | 'dinner'
- */
-export function fetchMealByType(mealType: string) {
-    return useFetch<TodayResponse>(`/menu/${mealType}`);
+    return { data, loading, error };
 }
