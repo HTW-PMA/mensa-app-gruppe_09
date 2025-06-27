@@ -1,11 +1,13 @@
 // app/index.tsx
 import React from 'react';
-import { ScrollView, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
+import { ScrollView, Text, View, ActivityIndicator, StyleSheet, Button } from 'react-native';
 import { useFetchTodayMenu } from '../utils/api';
 import { MealAccordion } from '../components/MealAccordion';
+import { useRouter } from 'expo-router';
 
 export default function TodayScreen(): JSX.Element {
     const { data, loading, error } = useFetchTodayMenu();
+    const router = useRouter();
 
     if (loading) {
         return (
@@ -23,18 +25,31 @@ export default function TodayScreen(): JSX.Element {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.list}>
-            {data.meals.length > 0 ? (
-                data.meals.map((meal) => <MealAccordion key={meal.id} meal={meal} />)
-            ) : (
-                <Text style={styles.empty}>Heute keine Gerichte.</Text>
-            )}
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={styles.list}>
+                {data.meals.length > 0 ? (
+                    data.meals.map((meal) => <MealAccordion key={meal.id} meal={meal} />)
+                ) : (
+                    <Text style={styles.empty}>Heute keine Gerichte.</Text>
+                )}
+            </ScrollView>
+            <View style={styles.navButtons}>
+                <Button title="Wochenplan" onPress={() => router.push('/schedule')} />
+                <Button title="Favoriten" onPress={() => router.push('/favorites')} />
+            </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
-    list:   { padding: 16, paddingBottom: 32 },
-    empty:  { textAlign: 'center', marginTop: 20 },
+    list: { padding: 16, paddingBottom: 32 },
+    empty: { textAlign: 'center', marginTop: 20 },
+    navButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingVertical: 10,
+        borderTopWidth: 1,
+        borderColor: '#ccc',
+    },
 });
