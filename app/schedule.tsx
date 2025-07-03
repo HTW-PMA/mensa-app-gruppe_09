@@ -1,13 +1,21 @@
 // app/schedule.tsx
 import React from 'react';
 import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
-import { useFetchWeeklySchedule /*, useFetchWeeklyScheduleReal */ } from '../utils/api';
+import { useFetchWeeklySchedule } from '../utils/api';
 import { ScheduleList } from '../components/ScheduleList';
+import { useLocationContext } from '../hooks/LocationContext';
 
 export default function ScheduleScreen(): JSX.Element {
-    // später auf useFetchWeeklyScheduleReal() wechseln
-    const { data, loading, error } = useFetchWeeklySchedule();
+    const { canteen } = useLocationContext();
+    const { data, loading, error } = useFetchWeeklySchedule(canteen?.id);
 
+    if (!canteen) {
+        return (
+            <View style={styles.center}>
+                <Text>Bitte wähle eine Mensa.</Text>
+            </View>
+        );
+    }
     if (loading) {
         return (
             <View style={styles.center}>

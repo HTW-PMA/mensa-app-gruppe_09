@@ -21,7 +21,4 @@ build/
 
 # Tests
 coverage/
-
-
-
-
+.env

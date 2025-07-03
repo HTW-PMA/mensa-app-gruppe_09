@@ -9,6 +9,7 @@ import {
     UIManager,
     Text,
 } from 'react-native';
+import { FavoriteButton } from './FavoriteButton';
 
 // Android Animation Enabler
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -37,7 +38,10 @@ export const MealAccordion: React.FC<Props> = ({ meal }) => {
         <View style={styles.card}>
             <Pressable onPress={toggle} style={styles.header}>
                 <Text style={styles.title}>{meal.name}</Text>
-                <Text style={styles.indicator}>{open ? '−' : '+'}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <FavoriteButton meal={meal} />
+                    <Text style={styles.indicator}>{open ? '−' : '+'}</Text>
+                </View>
             </Pressable>
             {open && (
                 <View style={styles.body}>

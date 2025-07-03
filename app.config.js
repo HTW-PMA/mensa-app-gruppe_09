@@ -1,29 +1,27 @@
-// app.config.js
 import 'dotenv/config';
 
-// Dynamische Expo-Konfiguration, um .env-Werte in extra zu injizieren
-export default ({ config }) => ({
-    ...config,
+export default {
     expo: {
-        ...config.expo,
-        // Linking-Schema für Deep-Links
-        scheme: 'foodloop',
-        sdkVersion: '51.0.0',
-        name: 'Foodloop Mensa-App',
-        slug: 'mensa-app',
-        version: '1.0.0',
-        platforms: ['ios', 'android', 'web'],
+        "sdkVersion": "51.0.0",
+        name: "Foodloop Mensa-App",
+        slug: "mensa-app",
+        version: "1.0.0",
+        platforms: ["ios", "android", "web"],
+        android: {
+            package: 'com.foodloop.mensaApp',
+            usesCleartextTraffic: true,   // = Erlaubt HTTP im eigenen Build
+        },
+        scheme: "mensaapp", // <-- Added scheme for deep linking
         extra: {
-            // Uppercase-Variante für Konsistenz
-            MENSA_API_KEY: process.env.MENSA_API_KEY,
-            // Lowercase-Variante, wie in deinem Code genutzt
-            mensaApiKey: process.env.MENSA_API_KEY
+            mensaApiKey:process.env.MENSA_API_KEY,
+            mensaBaseUrl:process.env.MENSA_API_BASE_URL,
+            openaiApiKey: process.env.OPENAI_API_KEY, // <-- Added OpenAI key
         },
         splash: {
-            image: './assets/images/splash.png',
-            resizeMode: 'contain',
-            backgroundColor: '#ffffff'
+            image: "./assets/images/splash.png",
+            resizeMode: "contain",
+            backgroundColor: "#ffffff"
         },
-        // … weitere Expo-Konfigurationen (icon, assetBundlePatterns, etc.) …
+        // … deine anderen expo-Konfigurationen (icon, assetBundlePatterns, etc.) …
     }
-});
+};

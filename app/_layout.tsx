@@ -8,6 +8,9 @@ import { Tabs } from 'expo-router';
 import { ThemedView } from '../components/ThemedView';
 import { useColorScheme } from '../hooks/useColorScheme';
 import { TabBarIcon } from '../components/TabBarIcon';
+import { FavoritesProvider } from '../hooks/FavoritesContext';
+import { LocationProvider, useLocationContext } from '../hooks/LocationContext';
+import LocationSelector from '../components/LocationSelector';
 
 // Prevent the native splash screen from auto-hiding before we're ready
 SplashScreen.preventAutoHideAsync();
@@ -43,51 +46,63 @@ export default function RootLayout(): JSX.Element | null {
 
     // Endlich unser Tab-Layout
     return (
-        <ThemedView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-
-            <Tabs
-                screenOptions={{
-                    headerShown: false,
-                    tabBarActiveTintColor: colorScheme === 'dark' ? '#fff' : '#000',
-                }}
-            >
-                <Tabs.Screen
-                    name="index"
-                    options={{
-                        title: 'Heute',
-                        tabBarIcon: ({ color }) => <TabBarIcon name="today" color={color} />,
-                    }}
-                />
-                <Tabs.Screen
-                    name="schedule"
-                    options={{
-                        title: 'Wochenplan',
-                        tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
-                    }}
-                />
-                <Tabs.Screen
-                    name="favorites"
-                    options={{
-                        title: 'Favoriten',
-                        tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
-                    }}
-                />
-                <Tabs.Screen
-                    name="menu"
-                    options={{
-                        title: 'Mahlzeiten',
-                        tabBarIcon: ({ color }) => <TabBarIcon name="restaurant" color={color} />,
-                    }}
-                />
-                <Tabs.Screen
-                    name="profil"
-                    options={{
-                        title: 'Profil',
-                        tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
-                    }}
-                />
-            </Tabs>
-        </ThemedView>
+        <LocationProvider>
+            <FavoritesProvider>
+                <LocationGate>
+                    <ThemedView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+                        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+                        <Tabs
+                            screenOptions={{
+                                headerShown: false,
+                                tabBarActiveTintColor: colorScheme === 'dark' ? '#fff' : '#000',
+                            }}
+                        >
+                            <Tabs.Screen
+                                name="index"
+                                options={{
+                                    title: 'Heute',
+                                    tabBarIcon: ({ color }) => <TabBarIcon name="today" color={color} />,
+                                }}
+                            />
+                            <Tabs.Screen
+                                name="schedule"
+                                options={{
+                                    title: 'Wochenplan',
+                                    tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
+                                }}
+                            />
+                            <Tabs.Screen
+                                name="favorites"
+                                options={{
+                                    title: 'Favoriten',
+                                    tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
+                                }}
+                            />
+                            <Tabs.Screen
+                                name="menu"
+                                options={{
+                                    title: 'Health Score',
+                                    tabBarIcon: ({ color }) => <TabBarIcon name="restaurant" color={color} />,
+                                }}
+                            />
+                            <Tabs.Screen
+                                name="profil"
+                                options={{
+                                    title: 'Profil',
+                                    tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
+                                }}
+                            />
+                            {/* LocationSelector and test tabs are not included, so they are hidden from the app */}
+                        </Tabs>
+                    </ThemedView>
+                </LocationGate>
+            </FavoritesProvider>
+        </LocationProvider>
     );
+}
+
+function LocationGate({ children }: { children: React.ReactNode }) {
+    const { city, canteen } = useLocationContext();
+    if (!(city && canteen)) return <LocationSelector />;
+    return <>{children}</>;
 }

@@ -3,7 +3,7 @@ export default {
     light: {
         text: '#000000',
         background: '#ffffff',
-        card: '#f0f0f0',
+        card: '#c4a8a8',
         border: '#d0d0d0',
         notification: '#ff453a',
     },
