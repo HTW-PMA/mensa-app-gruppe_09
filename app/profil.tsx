@@ -2,17 +2,36 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocationContext } from '../hooks/LocationContext';
+import { t, translations, Language } from '../utils/i18n';
 
 export default function ProfilScreen(): JSX.Element {
     const { city, canteen, resetLocation } = useLocationContext();
+    const [lang, setLang] = React.useState<Language>('de');
     return (
         <ScrollView contentContainerStyle={{ padding: 24 }}>
-            <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16 }}>Profil</Text>
-            <Text style={{ fontSize: 16, marginBottom: 8 }}>Stadt: {city || '-'}</Text>
-            <Text style={{ fontSize: 16, marginBottom: 8 }}>Mensa: {canteen ? canteen.name : '-'}</Text>
+            <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16 }}>{t(lang, 'profile')}</Text>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>{t(lang, 'city')}: {city || '-'}</Text>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>{t(lang, 'canteen')}: {canteen ? canteen.name : '-'}</Text>
             <TouchableOpacity style={styles.button} onPress={resetLocation}>
-                <Text style={styles.buttonText}>Stadt/Mensa ändern</Text>
+                <Text style={styles.buttonText}>{t(lang, 'changeLocation')}</Text>
             </TouchableOpacity>
+            <View style={{ marginTop: 32 }}>
+                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>{t(lang, 'language')}:</Text>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                    <TouchableOpacity
+                        style={[styles.langBtn, lang === 'de' && styles.langBtnActive]}
+                        onPress={() => setLang('de')}
+                    >
+                        <Text style={{ color: lang === 'de' ? '#fff' : '#145A32' }}>{t(lang, 'german')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.langBtn, lang === 'en' && styles.langBtnActive]}
+                        onPress={() => setLang('en')}
+                    >
+                        <Text style={{ color: lang === 'en' ? '#fff' : '#145A32' }}>{t(lang, 'english')}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </ScrollView>
     );
 }
@@ -22,7 +41,7 @@ const styles = StyleSheet.create({
     heading: { fontSize: 24, fontWeight: '700' },
     button: {
         marginTop: 24,
-        backgroundColor: '#007AFF',
+        backgroundColor: '#145A32', // Dunkelgrün
         borderRadius: 8,
         padding: 14,
         alignItems: 'center',
@@ -31,5 +50,18 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
+    },
+    langBtn: {
+        borderWidth: 1,
+        borderColor: '#145A32',
+        borderRadius: 6,
+        paddingVertical: 8,
+        paddingHorizontal: 18,
+        marginRight: 8,
+        backgroundColor: '#fff',
+    },
+    langBtnActive: {
+        backgroundColor: '#145A32',
+        borderColor: '#145A32',
     },
 });

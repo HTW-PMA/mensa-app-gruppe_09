@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#145A32', // Dunkelgrün
         borderRadius: 8,
         paddingVertical: 14,
         paddingHorizontal: 24,

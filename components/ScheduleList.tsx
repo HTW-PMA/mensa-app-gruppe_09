@@ -2,7 +2,9 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from './ThemedText';
-import { MealAccordion, Meal } from './MealAccordion';
+import { MealAccordion } from './MealAccordion';
+import { BadgeIcon } from './BadgeIcon';
+import { MealImage } from './MealImage'; // Import MealImage component
 
 export interface DaySchedule {
     day: string;       // z.B. "Montag"
@@ -47,11 +49,16 @@ export const ScheduleList: React.FC<Props> = ({ days }) => {
                     >
                         <ThemedText style={styles.dayHeading}>{day}</ThemedText>
                         {isSelected && (
-                            <View style={{ marginTop: 4 }}>
+                            <View style={{ marginTop: 8 }}>
                                 {schedule && schedule.meals.length > 0 ? (
-                                    schedule.meals.map(meal => (
-                                        <ThemedText key={meal.id} style={styles.mealText}>{meal.name}</ThemedText>
-                                    ))
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                                        {schedule.meals.map((meal, mealIdx) => (
+                                            <View key={meal.id ? `${meal.id}` : `${meal.name}-${mealIdx}` } style={{ alignItems: 'center', margin: 8 }}>
+                                                <MealImage name={meal.name} size={64} />
+                                                <ThemedText style={{ fontWeight: '700', fontSize: 15, marginTop: 4, textAlign: 'center' }}>{meal.name}</ThemedText>
+                                            </View>
+                                        ))}
+                                    </View>
                                 ) : (
                                     <ThemedText style={styles.mealText}>Keine Gerichte</ThemedText>
                                 )}
@@ -107,3 +114,13 @@ const styles = StyleSheet.create({
         marginBottom: 2,
     },
 });
+
+// Extend Meal type for badges and prices
+interface Meal {
+    id: string;
+    name: string;
+    description?: string;
+    price?: number;
+    prices?: { type: string; price: number }[];
+    badges?: string[];
+}

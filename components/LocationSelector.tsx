@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   heading: { fontSize: 22, fontWeight: '700', marginVertical: 16 },
   list: { width: '100%', marginBottom: 16 },
   item: { padding: 14, borderRadius: 8, backgroundColor: '#eee', marginBottom: 8 },
-  selected: { backgroundColor: '#007AFF' },
+  selected: { backgroundColor: '#145A32' }, // Dunkelgrün für Auswahl
   itemText: { fontSize: 16, color: '#222' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
 });

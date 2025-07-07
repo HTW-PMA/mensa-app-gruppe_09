@@ -5,7 +5,9 @@ import Constants from 'expo-constants';
 import { useFetchTodayMenu, useFetchBerlinCanteens, fetchAdditives, fetchBadges } from '../utils/api';
 import { MealAccordion } from '../components/MealAccordion';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { BadgeIcon } from '../components/BadgeIcon';
 import { useLocationContext } from '../hooks/LocationContext';
+import { MealImage } from '../components/MealImage';
 
 export default function TodayScreen(): JSX.Element {
     const { canteen } = useLocationContext();
@@ -14,6 +16,8 @@ export default function TodayScreen(): JSX.Element {
     const [selectedBadges, setSelectedBadges] = React.useState<string[]>([]);
     const [allAdditives, setAllAdditives] = React.useState<any[]>([]);
     const [allBadges, setAllBadges] = React.useState<any[]>([]);
+    // Filter modal state
+    const [showFilters, setShowFilters] = React.useState(false);
 
     // Fetch all additives and badges when a canteen is selected
     useEffect(() => {
@@ -78,29 +82,53 @@ export default function TodayScreen(): JSX.Element {
 
     return (
         <ScrollView contentContainerStyle={s.list}>
-            {/* Filter controls */}
-            {(allAdditives.length > 0 || allBadges.length > 0) && (
+            {/* Filter Button */}
+            <TouchableOpacity
+                style={{
+                    backgroundColor: '#145A32',
+                    borderRadius: 8,
+                    paddingVertical: 10,
+                    paddingHorizontal: 18,
+                    alignSelf: 'center',
+                    marginBottom: 16,
+                }}
+                onPress={() => setShowFilters(v => !v)}
+            >
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 16 }}>
+                    {showFilters ? 'Filter ausblenden' : 'Filter anzeigen'}
+                </Text>
+            </TouchableOpacity>
+            {/* Filter controls (collapsible) */}
+            {showFilters && (allAdditives.length > 0 || allBadges.length > 0) && (
                 <View style={{ marginBottom: 16 }}>
                     {allAdditives.length > 0 && (
                         <View style={{ marginBottom: 8 }}>
                             <Text style={{ fontWeight: 'bold' }}>Additive filtern:</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                                {allAdditives.map((add: any) => (
-                                    <TouchableOpacity
-                                        key={add.id || add.ID}
-                                        style={{
-                                            padding: 6,
-                                            margin: 2,
-                                            borderRadius: 6,
-                                            backgroundColor: selectedAdditives.includes(add.id || add.ID) ? '#007AFF' : '#eee',
-                                        }}
-                                        onPress={() => setSelectedAdditives(sel => sel.includes(add.id || add.ID)
-                                            ? sel.filter(a => a !== (add.id || add.ID))
-                                            : [...sel, add.id || add.ID])}
-                                    >
-                                        <Text style={{ color: selectedAdditives.includes(add.id || add.ID) ? '#fff' : '#333' }}>{add.name || add.text || add.ID}</Text>
-                                    </TouchableOpacity>
-                                ))}
+                                {allAdditives
+                                    .filter((add: any) => {
+                                        const remove = [
+                                            'soja','senf','pistazie','farbstoff','phsphat','geschwärzt','dinkel','kamut','kann abführend wirken','mandeln','sesam','hefe','lupine','gewachst','konserviert','mit zum teil fein zerkleinertem','weizen','krebstiere','enhalt eine phenylylyninquelle','erdnüsse','hafer','gerste','roggen','sellerie','weichtiere'
+                                        ];
+                                        const name = (add.name || add.text || '').toLowerCase();
+                                        return !remove.some(r => name.includes(r));
+                                    })
+                                    .map((add: any) => (
+                                        <TouchableOpacity
+                                            key={add.id || add.ID}
+                                            style={{
+                                                padding: 6,
+                                                margin: 2,
+                                                borderRadius: 6,
+                                                backgroundColor: selectedAdditives.includes(add.id || add.ID) ? '#145A32' : '#eee',
+                                            }}
+                                            onPress={() => setSelectedAdditives(sel => sel.includes(add.id || add.ID)
+                                                ? sel.filter(a => a !== (add.id || add.ID))
+                                                : [...sel, add.id || add.ID])}
+                                        >
+                                            <Text style={{ color: selectedAdditives.includes(add.id || add.ID) ? '#fff' : '#333' }}>{add.name || add.text || add.ID}</Text>
+                                        </TouchableOpacity>
+                                    ))}
                             </View>
                         </View>
                     )}
@@ -115,7 +143,7 @@ export default function TodayScreen(): JSX.Element {
                                             padding: 6,
                                             margin: 2,
                                             borderRadius: 6,
-                                            backgroundColor: selectedBadges.includes(badge.id || badge.ID) ? '#007AFF' : '#eee',
+                                            backgroundColor: selectedBadges.includes(badge.id || badge.ID) ? '#145A32' : '#eee',
                                         }}
                                         onPress={() => setSelectedBadges(sel => sel.includes(badge.id || badge.ID)
                                             ? sel.filter(b => b !== (badge.id || badge.ID))
@@ -142,9 +170,17 @@ export default function TodayScreen(): JSX.Element {
                     <View key={category} style={{ marginBottom: 24 }}>
                         <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 8 }}>{category}</Text>
                         {(meals as any[]).map((meal, idx) => (
-                            <View key={meal.id || meal.ID || idx} style={{ marginBottom: 10, padding: 10, backgroundColor: '#f8f8f8', borderRadius: 8, flexDirection: 'row', alignItems: 'center' }}>
+                            <View
+                                key={meal.id || meal.ID || meal.name + '-' + idx}
+                                style={{ marginBottom: 10, padding: 10, backgroundColor: '#f8f8f8', borderRadius: 8, flexDirection: 'row', alignItems: 'center' }}
+                            >
                                 <View style={{ flex: 1 }}>
-                                    <Text style={{ fontSize: 16, fontWeight: '600' }}>{meal.name}</Text>
+                                    {/* In the meal rendering section, show meal type icon before name */}
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        {/* <MealTypeIcon badges={meal.badges} size={38} /> */}
+                                        <MealImage name={meal.name} size={64} />
+                                        <Text style={{ fontSize: 18, fontWeight: '700' }}>{meal.name}</Text>
+                                    </View>
                                     {meal.prices && Array.isArray(meal.prices) && meal.prices.length > 0 && (
                                         <Text style={{ color: '#666', fontSize: 14 }}>
                                             Preise: {meal.prices.map((p: any) => `${p.type}: ${p.price}€`).join(', ')}
@@ -155,6 +191,14 @@ export default function TodayScreen(): JSX.Element {
                                     )}
                                     {meal.waterBilanz !== undefined && (
                                         <Text style={{ color: '#666', fontSize: 13 }}>Wasser: {meal.waterBilanz} l</Text>
+                                    )}
+                                    {/* In the meal rendering section, show badge icons if present */}
+                                    {Array.isArray(meal.badges) && meal.badges.length > 0 && (
+                                        <View style={{ flexDirection: 'row', marginTop: 4 }}>
+                                            {meal.badges.map((badge: string) => (
+                                                <BadgeIcon key={badge} badge={badge} />
+                                            ))}
+                                        </View>
                                     )}
                                 </View>
                                 <FavoriteButton meal={meal} />

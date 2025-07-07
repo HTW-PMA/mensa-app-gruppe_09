@@ -11,6 +11,7 @@ import { TabBarIcon } from '../components/TabBarIcon';
 import { FavoritesProvider } from '../hooks/FavoritesContext';
 import { LocationProvider, useLocationContext } from '../hooks/LocationContext';
 import LocationSelector from '../components/LocationSelector';
+import { AppHeaderLogo } from '../components/AppHeaderLogo';
 
 // Prevent the native splash screen from auto-hiding before we're ready
 SplashScreen.preventAutoHideAsync();
@@ -51,10 +52,18 @@ export default function RootLayout(): JSX.Element | null {
                 <LocationGate>
                     <ThemedView style={{ flex: 1 }} onLayout={onLayoutRootView}>
                         <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+                        <AppHeaderLogo />
                         <Tabs
                             screenOptions={{
                                 headerShown: false,
                                 tabBarActiveTintColor: colorScheme === 'dark' ? '#fff' : '#000',
+                                tabBarStyle: {
+                                    backgroundColor: '#145A32', // Dunkelgrün
+                                    borderTopWidth: 0,
+                                },
+                                tabBarLabelStyle: {
+                                    color: colorScheme === 'dark' ? '#fff' : '#fff',
+                                },
                             }}
                         >
                             <Tabs.Screen
