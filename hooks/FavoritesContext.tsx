@@ -8,19 +8,23 @@ interface FavoritesContextType {
   favorites: Meal[];
   addFavorite: (meal: Meal) => void;
   removeFavorite: (id: string) => void;
+  error: string | null;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Meal[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
       .then((json) => {
         if (json) setFavorites(JSON.parse(json));
       })
-      .catch(console.error);
+      .catch((e) => {
+        setError('Favoriten konnten nicht geladen werden. Bitte prüfe deine Internetverbindung.');
+      });
   }, []);
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite }}>
+    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, error }}>
       {children}
     </FavoritesContext.Provider>
   );

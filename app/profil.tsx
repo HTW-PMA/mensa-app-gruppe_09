@@ -12,6 +12,22 @@ export default function ProfilScreen(): JSX.Element {
             <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16 }}>Lieblings-Mensa</Text>
             <Text style={{ fontSize: 16, marginBottom: 8 }}>Stadt: {city || '-'}</Text>
             <Text style={{ fontSize: 16, marginBottom: 8 }}>Mensa: {canteen ? canteen.name : '-'}</Text>
+            <View style={{ marginTop: 18, marginBottom: 8, backgroundColor: '#f6f6f6', borderRadius: 10, padding: 14, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 }}>
+                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 6, color: '#145A32' }}>Öffnungszeiten</Text>
+                {canteen && canteen.openingHours && Array.isArray(canteen.openingHours) && canteen.openingHours.length > 0 ? (
+                    canteen.openingHours.map((oh: any, idx: number) => (
+                        <View key={idx} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
+                            <Text style={{ fontWeight: '500', color: '#333' }}>{oh.day || oh.tag || '-'}</Text>
+                            <Text style={{ color: '#555' }}>{oh.time || oh.zeit || '-'}</Text>
+                        </View>
+                    ))
+                ) : (
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ fontWeight: '500', color: '#333' }}>Mo. – Fr.</Text>
+                        <Text style={{ color: '#555' }}>07:45 – 14:30 Uhr</Text>
+                    </View>
+                )}
+            </View>
             <TouchableOpacity style={styles.button} onPress={resetLocation}>
                 <Text style={styles.buttonText}>Stadt/Mensa ändern</Text>
             </TouchableOpacity>

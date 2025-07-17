@@ -24,9 +24,15 @@ export default function ScheduleScreen(): JSX.Element {
         );
     }
     if (error) {
+        let msg = 'Der Wochenplan konnte nicht geladen werden.';
+        if (error.toLowerCase().includes('network') || error.toLowerCase().includes('fetch')) {
+            msg += '\nBitte prüfe deine Internetverbindung.';
+        } else {
+            msg += `\nFehler: ${error}`;
+        }
         return (
             <View style={styles.center}>
-                <Text>Fehler beim Laden: {error}</Text>
+                <Text style={{textAlign: 'center'}}>{msg}</Text>
             </View>
         );
     }
