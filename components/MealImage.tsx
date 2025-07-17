@@ -29,6 +29,13 @@ const foodImages: Record<string, any> = {
   'sauce & dip': require('../assets/images/Sauce & Dip Extra.png'),
   'pasta mit rucolasauce': require('../assets/images/Pasta mit Rucolasauce, getrockneten Tomaten und gerösteten Walnüssen.png'),
   'veganen schmelz': require('../assets/images/Veganer Schmelz gerieben.png'),
+  'balkangemüse': require('../assets/images/Balkangemüse.png'),
+  'basmatireis': require('../assets/images/Basmatireis.png'),
+  'birnen-hafer-joghurt': require('../assets/images/Birnen-Hafer-Joghurt.png'),
+  'blattspinat': require('../assets/images/Blattspinat in Sojacreme.png'),
+  'kräutersuppe': require('../assets/images/Kräutersuppe mit Sojasahne und Tomaten.png'),
+  'nougatpudding': require('../assets/images/Nougatpudding.png'),
+  'pasta mit paprikasauce': require('../assets/images/Pasta mit Paprikasauce grüner Pepperoni und veganem Käseschmelz.png'),
   default: require('../assets/images/icon.png'),
 };
 

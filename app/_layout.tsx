@@ -97,7 +97,7 @@ export default function RootLayout(): JSX.Element | null {
                             <Tabs.Screen
                                 name="profil"
                                 options={{
-                                    title: 'Profil',
+                                    title: 'Lieblings-Mensa',
                                     tabBarIcon: ({ color }) => <TabBarIcon name="person" color={color} />,
                                 }}
                             />

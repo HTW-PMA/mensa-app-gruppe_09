@@ -46,8 +46,18 @@ export const MealAccordion: React.FC<Props> = ({ meal }) => {
             {open && (
                 <View style={styles.body}>
                     {meal.description && <Text style={styles.text}>{meal.description}</Text>}
-                    {meal.price != null && (
-                        <Text style={[styles.text, styles.price]}>{meal.price.toFixed(2)} €</Text>
+                    {meal.prices && Array.isArray(meal.prices) && meal.prices.length > 0 ? (
+                        <Text style={[styles.text, styles.price]}>
+                            Preise: {['Studierende', 'Bedienstete', 'Gäste'].map((type, idx) => {
+                                const p = meal.prices[idx];
+                                if (!p || p.price === undefined || p.price === null) return null;
+                                return `${type}: ${p.price}€`;
+                            }).filter(Boolean).join(', ')}
+                        </Text>
+                    ) : (
+                        meal.price != null && (
+                            <Text style={[styles.text, styles.price]}>{meal.price.toFixed(2)} €</Text>
+                        )
                     )}
                 </View>
             )}

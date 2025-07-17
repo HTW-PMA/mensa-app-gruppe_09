@@ -1,65 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { useLocationContext } from '../hooks/LocationContext';
-import { useFetchBerlinCanteens, fetchCanteens } from '../utils/api';
+import { useFetchBerlinCanteens } from '../utils/api';
+
 
 export default function LocationSelector() {
-  const { city, canteen, setCity, setCanteen } = useLocationContext();
-  const [cities, setCities] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [canteens, setCanteens] = useState<any[]>([]);
-  const [selectedCity, setSelectedCity] = useState<string | null>(city);
+  const { setCity, canteen, setCanteen } = useLocationContext();
+  const { canteens, loading, error } = useFetchBerlinCanteens();
 
-  useEffect(() => {
-    fetchCanteens().then((all) => {
-      const uniqueCities = Array.from(new Set(all.map((c: any) => c.address?.city).filter((x: any): x is string => typeof x === 'string')));
-      setCities(uniqueCities);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (selectedCity) {
-      fetchCanteens().then((all) => {
-        setCanteens(all.filter((c: any) => c.address?.city === selectedCity));
-      });
-    } else {
-      setCanteens([]);
-    }
-  }, [selectedCity]);
-
-  if (loading) return <View style={styles.center}><ActivityIndicator size="large" /><Text>Lade Städte…</Text></View>;
+  if (loading) return <View style={styles.center}><ActivityIndicator size="large" /><Text>Lade Mensen…</Text></View>;
+  if (error) return <View style={styles.center}><Text>Fehler beim Laden der Mensen: {error}</Text></View>;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Stadt wählen</Text>
+      <Text style={styles.heading}>Mensa wählen (nur Berlin)</Text>
       <View style={styles.list}>
-        {cities.map((c) => (
+        {canteens.map((ct) => (
           <TouchableOpacity
-            key={c}
-            style={[styles.item, selectedCity === c && styles.selected]}
-            onPress={() => setSelectedCity(c)}
+            key={ct.id}
+            style={[styles.item, canteen && canteen.id === ct.id && styles.selected]}
+            onPress={() => {
+              setCity('Berlin');
+              setCanteen(ct);
+            }}
           >
-            <Text style={styles.itemText}>{c}</Text>
+            <Text style={styles.itemText}>{ct.name} ({ct.address?.district || ct.address?.city})</Text>
           </TouchableOpacity>
         ))}
       </View>
-      {selectedCity && (
-        <>
-          <Text style={styles.heading}>Mensa wählen</Text>
-          <View style={styles.list}>
-            {canteens.map((ct) => (
-              <TouchableOpacity
-                key={ct.id}
-                style={[styles.item, canteen && canteen.id === ct.id && styles.selected]}
-                onPress={() => { setCity(selectedCity); setCanteen(ct); }}
-              >
-                <Text style={styles.itemText}>{ct.name} ({ct.address?.district || ct.address?.city})</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </>
-      )}
     </ScrollView>
   );
 }

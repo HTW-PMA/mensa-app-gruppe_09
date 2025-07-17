@@ -9,26 +9,26 @@ export default function ProfilScreen(): JSX.Element {
     const [lang, setLang] = React.useState<Language>('de');
     return (
         <ScrollView contentContainerStyle={{ padding: 24 }}>
-            <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16 }}>{t(lang, 'profile')}</Text>
-            <Text style={{ fontSize: 16, marginBottom: 8 }}>{t(lang, 'city')}: {city || '-'}</Text>
-            <Text style={{ fontSize: 16, marginBottom: 8 }}>{t(lang, 'canteen')}: {canteen ? canteen.name : '-'}</Text>
+            <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16 }}>Lieblings-Mensa</Text>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>Stadt: {city || '-'}</Text>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>Mensa: {canteen ? canteen.name : '-'}</Text>
             <TouchableOpacity style={styles.button} onPress={resetLocation}>
-                <Text style={styles.buttonText}>{t(lang, 'changeLocation')}</Text>
+                <Text style={styles.buttonText}>Stadt/Mensa ändern</Text>
             </TouchableOpacity>
             <View style={{ marginTop: 32 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>{t(lang, 'language')}:</Text>
+                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>Sprache:</Text>
                 <View style={{ flexDirection: 'row', gap: 12 }}>
                     <TouchableOpacity
                         style={[styles.langBtn, lang === 'de' && styles.langBtnActive]}
                         onPress={() => setLang('de')}
                     >
-                        <Text style={{ color: lang === 'de' ? '#fff' : '#145A32' }}>{t(lang, 'german')}</Text>
+                        <Text style={{ color: lang === 'de' ? '#fff' : '#145A32' }}>Deutsch</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.langBtn, lang === 'en' && styles.langBtnActive]}
                         onPress={() => setLang('en')}
                     >
-                        <Text style={{ color: lang === 'en' ? '#fff' : '#145A32' }}>{t(lang, 'english')}</Text>
+                        <Text style={{ color: lang === 'en' ? '#fff' : '#145A32' }}>Englisch</Text>
                     </TouchableOpacity>
                 </View>
             </View>

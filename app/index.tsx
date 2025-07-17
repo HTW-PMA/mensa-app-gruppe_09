@@ -183,7 +183,11 @@ export default function TodayScreen(): JSX.Element {
                                     </View>
                                     {meal.prices && Array.isArray(meal.prices) && meal.prices.length > 0 && (
                                         <Text style={{ color: '#666', fontSize: 14 }}>
-                                            Preise: {meal.prices.map((p: any) => `${p.type}: ${p.price}€`).join(', ')}
+                                            Preise: {['Studierende', 'Bedienstete', 'Gäste'].map((type, idx) => {
+                                                const p = meal.prices[idx];
+                                                if (!p || p.price === undefined || p.price === null) return null;
+                                                return `${type}: ${p.price}€`;
+                                            }).filter(Boolean).join(', ')}
                                         </Text>
                                     )}
                                     {meal.co2Bilanz !== undefined && (

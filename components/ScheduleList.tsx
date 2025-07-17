@@ -35,44 +35,58 @@ export const ScheduleList: React.FC<Props> = ({ days }) => {
     }, [days]);
 
     return (
-        <View style={styles.container}>
-            <ThemedText style={styles.heading}>Wochenplan</ThemedText>
-            {WEEKDAYS.map(day => {
-                const schedule = dayMap[day];
-                const isSelected = selectedDay === day;
-                return (
-                    <TouchableOpacity
-                        key={day}
-                        style={[styles.card, isSelected && styles.cardSelected]}
-                        onPress={() => setSelectedDay(isSelected ? null : day)}
-                        activeOpacity={0.8}
-                    >
-                        <ThemedText style={styles.dayHeading}>{day}</ThemedText>
-                        {isSelected && (
-                            <View style={{ marginTop: 8 }}>
-                                {schedule && schedule.meals.length > 0 ? (
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                                        {schedule.meals.map((meal, mealIdx) => (
-                                            <View key={meal.id ? `${meal.id}` : `${meal.name}-${mealIdx}` } style={{ alignItems: 'center', margin: 8 }}>
-                                                <MealImage name={meal.name} size={64} />
-                                                <ThemedText style={{ fontWeight: '700', fontSize: 15, marginTop: 4, textAlign: 'center' }}>{meal.name}</ThemedText>
-                                            </View>
-                                        ))}
-                                    </View>
-                                ) : (
-                                    <ThemedText style={styles.mealText}>Keine Gerichte</ThemedText>
-                                )}
-                            </View>
-                        )}
-                        {!isSelected && schedule && schedule.meals.length > 0 && (
-                            <ThemedText style={styles.mealText} numberOfLines={1}>
-                                {schedule.meals[0].name}
-                                {schedule.meals.length > 1 ? `, ...` : ''}
-                            </ThemedText>
-                        )}
-                    </TouchableOpacity>
-                );
-            })}
+        <View style={{ flex: 1 }}>
+            <FlatList
+                contentContainerStyle={styles.container}
+                data={WEEKDAYS}
+                keyExtractor={day => day}
+                ListHeaderComponent={<ThemedText style={styles.heading}>Wochenplan</ThemedText>}
+                renderItem={({ item: day }) => {
+                    const schedule = dayMap[day];
+                    const isSelected = selectedDay === day;
+                    return (
+                        <TouchableOpacity
+                            key={day}
+                            style={[styles.card, isSelected && styles.cardSelected]}
+                            onPress={() => setSelectedDay(isSelected ? null : day)}
+                            activeOpacity={0.8}
+                        >
+                            <ThemedText style={styles.dayHeading}>{day}</ThemedText>
+                            {isSelected && (
+                                <View style={{ marginTop: 8 }}>
+                                    {schedule && schedule.meals.length > 0 ? (
+                                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                                            {schedule.meals.map((meal, mealIdx) => (
+                                                <View key={meal.id ? `${meal.id}` : `${meal.name}-${mealIdx}` } style={{ alignItems: 'center', margin: 8 }}>
+                                                    <MealImage name={meal.name} size={64} />
+                                                    <ThemedText style={{ fontWeight: '700', fontSize: 15, marginTop: 4, textAlign: 'center' }}>{meal.name}</ThemedText>
+                                                    {meal.prices && Array.isArray(meal.prices) && meal.prices.length > 0 && (
+                                                        <ThemedText style={{ fontSize: 13, color: '#666', marginTop: 2 }}>
+                                                            Preise: {['Studierende', 'Bedienstete', 'Gäste'].map((type, idx) => {
+                                                                const p = meal.prices[idx];
+                                                                if (!p || p.price === undefined || p.price === null) return null;
+                                                                return `${type}: ${p.price}€`;
+                                                            }).filter(Boolean).join(', ')}
+                                                        </ThemedText>
+                                                    )}
+                                                </View>
+                                            ))}
+                                        </View>
+                                    ) : (
+                                        <ThemedText style={styles.mealText}>Keine Gerichte</ThemedText>
+                                    )}
+                                </View>
+                            )}
+                            {!isSelected && schedule && schedule.meals.length > 0 && (
+                                <ThemedText style={styles.mealText} numberOfLines={1}>
+                                    {schedule.meals[0].name}
+                                    {schedule.meals.length > 1 ? `, ...` : ''}
+                                </ThemedText>
+                            )}
+                        </TouchableOpacity>
+                    );
+                }}
+            />
         </View>
     );
 };
