@@ -9,11 +9,11 @@ export default function ProfilScreen(): JSX.Element {
     const [lang, setLang] = React.useState<Language>('de');
     return (
         <ScrollView contentContainerStyle={{ padding: 24 }}>
-            <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16 }}>Lieblings-Mensa</Text>
-            <Text style={{ fontSize: 16, marginBottom: 8 }}>Stadt: {city || '-'}</Text>
-            <Text style={{ fontSize: 16, marginBottom: 8 }}>Mensa: {canteen ? canteen.name : '-'}</Text>
+            <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16 }}>{lang === 'de' ? 'Lieblings-Mensa' : 'Favorite Canteen'}</Text>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>{t(lang, 'city')}: {city || '-'}</Text>
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>{t(lang, 'canteen')}: {canteen ? canteen.name : '-'}</Text>
             <View style={{ marginTop: 18, marginBottom: 8, backgroundColor: '#f6f6f6', borderRadius: 10, padding: 14, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 6, color: '#145A32' }}>Öffnungszeiten</Text>
+                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 6, color: '#145A32' }}>{lang === 'de' ? 'Öffnungszeiten' : 'Opening hours'}</Text>
                 {canteen && canteen.openingHours && Array.isArray(canteen.openingHours) && canteen.openingHours.length > 0 ? (
                     canteen.openingHours.map((oh: any, idx: number) => (
                         <View key={idx} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -23,28 +23,28 @@ export default function ProfilScreen(): JSX.Element {
                     ))
                 ) : (
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ fontWeight: '500', color: '#333' }}>Mo. – Fr.</Text>
-                        <Text style={{ color: '#555' }}>07:45 – 14:30 Uhr</Text>
+                        <Text style={{ fontWeight: '500', color: '#333' }}>{lang === 'de' ? 'Mo. – Fr.' : 'Mon – Fri'}</Text>
+                        <Text style={{ color: '#555' }}>07:45 – 14:30 {lang === 'de' ? 'Uhr' : 'a.m. – 2:30 p.m.'}</Text>
                     </View>
                 )}
             </View>
             <TouchableOpacity style={styles.button} onPress={resetLocation}>
-                <Text style={styles.buttonText}>Stadt/Mensa ändern</Text>
+                <Text style={styles.buttonText}>{t(lang, 'changeLocation')}</Text>
             </TouchableOpacity>
             <View style={{ marginTop: 32 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>Sprache:</Text>
+                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>{t(lang, 'language')}:</Text>
                 <View style={{ flexDirection: 'row', gap: 12 }}>
                     <TouchableOpacity
                         style={[styles.langBtn, lang === 'de' && styles.langBtnActive]}
                         onPress={() => setLang('de')}
                     >
-                        <Text style={{ color: lang === 'de' ? '#fff' : '#145A32' }}>Deutsch</Text>
+                        <Text style={{ color: lang === 'de' ? '#fff' : '#145A32' }}>{t(lang, 'german')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.langBtn, lang === 'en' && styles.langBtnActive]}
                         onPress={() => setLang('en')}
                     >
-                        <Text style={{ color: lang === 'en' ? '#fff' : '#145A32' }}>Englisch</Text>
+                        <Text style={{ color: lang === 'en' ? '#fff' : '#145A32' }}>{t(lang, 'english')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
