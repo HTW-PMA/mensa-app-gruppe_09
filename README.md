@@ -1,8 +1,8 @@
 # mensa-app-gruppe_09👋
 **Achtung:**
 .env muss erstellen :
-MENSA_API_KEY=51ccm/MZduKofUG6SetXmZ7AAwDbFSdiSdaidL/MWzLY32me1vo/Uy4PdN66NbUHs12N1atRCrXL7377QQZy8t1D23G88GQZEGoZg1Bgl94Zy1GwDs+s/PmCwrbMGHgUeC9jqOiXWKxQ6EdmE81DPtWbQ4IiJ2Yk1TIiRzRbfNXWnc86nfmUS5myssDIs5+CLzcQllVszq39QbpLLw0caGxJsPIAZeH5j6OBF5jNtrPVOklZjha8Xcj5J+Xr9X52mKO9GUNj2g63M2T+8goR9Dp6t3fravseEckuRKZgDY3ma237lvN3uu6ITVL2I2qZYria3Ss8PgGIbap4KSQK9w==
-OPENAI_API_KEY=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
+MENSA_API_KEY=
+OPENAI_API_KEY=
 ((das gesamte projekt ist auf esraa Branch))
 
 **FoodLoop** ist eine moderne, plattformübergreifende App für Studierende und Hochschulangehörige, 
